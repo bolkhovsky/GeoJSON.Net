@@ -26,7 +26,7 @@ namespace GeoJSON.Net.Geometry
         /// Initializes a new instance of the <see cref="LineString"/> class.
         /// </summary>
         /// <param name="coordinates">The coordinates.</param>
-        public LineString(List<IPosition> coordinates)
+        public LineString(List<IGeographicPosition> coordinates)
         {
             if (coordinates == null)
             {
@@ -47,30 +47,8 @@ namespace GeoJSON.Net.Geometry
         /// </summary>
         /// <value>The Positions.</value>
         [JsonProperty(PropertyName = "coordinates", Required = Required.Always)]
-        [JsonConverter(typeof(PositionConverter))]
-        public List<IPosition> Coordinates { get; private set; }
-
-        /// <summary>
-        /// Determines whether this LineString is a <see cref="http://geojson.org/geojson-spec.html#linestring">LinearRing</see>.
-        /// </summary>
-        /// <returns>
-        ///   <c>true</c> if it is a linear ring; otherwise, <c>false</c>.
-        /// </returns>
-        public bool IsLinearRing()
-        {
-            return this.Coordinates.Count >= 4 && this.IsClosed();
-        }
-
-        /// <summary>
-        /// Determines whether this instance has its first and last coordinate at the same position and thereby is closed.
-        /// </summary>
-        /// <returns>
-        ///   <c>true</c> if this instance is closed; otherwise, <c>false</c>.
-        /// </returns>
-        public bool IsClosed()
-        {
-            return this.Coordinates[0].Equals(this.Coordinates[this.Coordinates.Count - 1]);
-        }
+        [JsonConverter(typeof(PositionsListConverter))]
+        public List<IGeographicPosition> Coordinates { get; private set; }
     }
 }
  

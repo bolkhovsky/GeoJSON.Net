@@ -24,9 +24,9 @@ namespace GeoJSON.Net.Geometry
         /// Initializes a new instance of the <see cref="MultiPolygon"/> class.
         /// </summary>
         /// <param name="polygons">The polygons contained in this MultiPolygon.</param>
-        public MultiPolygon(List<Polygon> polygons = null)
+        public MultiPolygon(List<List<IGeographicPosition>> polygons = null)
         {
-            this.Coordinates = polygons ?? new List<Polygon>();
+            this.Coordinates = polygons ?? new List<List<IGeographicPosition>>();
             this.Type = GeoJSONObjectType.MultiPolygon;
         }
 
@@ -34,7 +34,7 @@ namespace GeoJSON.Net.Geometry
         /// Gets the list of Polygons enclosed in this MultiPolygon.
         /// </summary>
         [JsonProperty(PropertyName = "coordinates", Required = Required.Always)]
-        [JsonConverter(typeof(PositionConverter))]
-        public List<Polygon> Coordinates { get; private set; }
+        [JsonConverter(typeof(MultiPositionConverter))]
+        public List<List<IGeographicPosition>> Coordinates { get; private set; }
     }
 }

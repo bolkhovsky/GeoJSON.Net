@@ -55,7 +55,7 @@ namespace GeoJSON.Net.Feature
         /// Gets the properties.
         /// </summary>
         /// <value>The properties.</value>
-        [JsonProperty(PropertyName = "properties", Required = Required.AllowNull)]
+        [JsonProperty(PropertyName = "properties", Required = Required.Default)]
         public Dictionary<string, object> Properties { get; private set; }
     }
 }

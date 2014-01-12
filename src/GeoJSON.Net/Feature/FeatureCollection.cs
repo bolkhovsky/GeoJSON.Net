@@ -25,7 +25,6 @@ namespace GeoJSON.Net.Feature
         public FeatureCollection(List<Feature> features)
         {
             this.Features = features;
-
             this.Type = GeoJSONObjectType.FeatureCollection;
         }
 

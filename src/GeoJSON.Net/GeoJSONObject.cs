@@ -7,6 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Newtonsoft.Json.Converters;
+
 namespace GeoJSON.Net
 {
     using Newtonsoft.Json;
@@ -24,6 +26,7 @@ namespace GeoJSON.Net
         /// The type of the object.
         /// </value>
         [JsonProperty(PropertyName = "type", Required = Required.Always)]
+        [JsonConverter(typeof(StringEnumConverter))]
         public GeoJSONObjectType Type { get; internal set; }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace GeoJSON.Net
         /// <value>
         /// The Coordinate Reference System Objects.
         /// </value>
-        [JsonProperty(PropertyName = "crs", Required = Required.AllowNull)]
+        [JsonProperty(PropertyName = "crs", Required = Required.Default)]
         public CoordinateReferenceSystem.ICRSObject CRS { get; set; }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace GeoJSON.Net
         /// In addition, the coordinate reference system for the bbox is assumed to match the coordinate reference
         /// system of the GeoJSON object of which it is a member.
         /// </value>
-        [JsonProperty(PropertyName = "bbox", Required = Required.AllowNull)]
+        [JsonProperty(PropertyName = "bbox", Required = Required.Default)]
         public double[] BoundingBoxes { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace GeoJSON.Net.Geometry
     using System.Linq;
     
     using Newtonsoft.Json;
+    using GeoJSON.Net.Converters;
 
     /// <summary>
     /// Defines the <see cref="http://geojson.org/geojson-spec.html#polygon">Polygon</see> type.
@@ -31,19 +32,19 @@ namespace GeoJSON.Net.Geometry
         /// The <see cref="http://geojson.org/geojson-spec.html#linestring">linear rings</see> with the first element
         /// in the array representing the exterior ring. Any subsequent elements represent interior rings (or holes).
         /// </param>
-        public Polygon(List<LineString> linearRings = null)
+        public Polygon(List<List<IGeographicPosition>> coordinates)
         {
-            if (linearRings == null)
+            if (coordinates == null)
             {
                 throw new ArgumentNullException("linearRings");
             }
 
-            if (linearRings.Any(linearRing => !linearRing.IsLinearRing()))
+            if (coordinates.Any(linearRing => !linearRing.IsLinearRing()))
             {
-                throw new ArgumentOutOfRangeException("linearRings", "All elements must be closed LineStrings with 4 or more positions (see GeoJSON spec at 'http://geojson.org/geojson-spec.html#linestring').");
+                throw new ArgumentOutOfRangeException("linearRings", "All elements must be closed with 4 or more positions (see GeoJSON spec at 'http://geojson.org/geojson-spec.html#linestring').");
             }
 
-            this.Coordinates = linearRings;
+            this.Coordinates = coordinates;
             this.Type = GeoJSONObjectType.Polygon;
         }
 
@@ -51,6 +52,7 @@ namespace GeoJSON.Net.Geometry
         /// Gets the list of points outlining this Polygon.
         /// </summary>
         [JsonProperty(PropertyName = "coordinates", Required = Required.Always)]
-        public List<LineString> Coordinates { get; private set; }
+        [JsonConverter(typeof(MultiPositionConverter))]
+        public List<List<IGeographicPosition>> Coordinates { get; private set; }
     }
 }

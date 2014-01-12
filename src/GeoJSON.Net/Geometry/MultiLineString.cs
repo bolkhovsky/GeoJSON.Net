@@ -12,6 +12,7 @@ namespace GeoJSON.Net.Geometry
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
+    using GeoJSON.Net.Converters;
 
     /// <summary>
     /// Defines the <see cref="http://geojson.org/geojson-spec.html#multilinestring">MultiLineString</see> type.
@@ -22,9 +23,9 @@ namespace GeoJSON.Net.Geometry
         /// Initializes a new instance of the <see cref="MultiLineString"/> class.
         /// </summary>
         /// <param name="coordinates">The coordinates.</param>
-        public MultiLineString(List<LineString> coordinates)
+        public MultiLineString(List<List<IGeographicPosition>> coordinates)
         {
-            this.Coordinates = coordinates ?? new List<LineString>();
+            this.Coordinates = coordinates ?? new List<List<IGeographicPosition>>();
             this.Type = GeoJSONObjectType.MultiLineString;
         }
         
@@ -33,6 +34,7 @@ namespace GeoJSON.Net.Geometry
         /// </summary>
         /// <value>The Coordinates.</value>
         [JsonProperty(PropertyName = "coordinates", Required = Required.Always)]
-        public List<LineString> Coordinates { get; private set; }
+        [JsonConverter(typeof(MultiPositionConverter))]
+        public List<List<IGeographicPosition>> Coordinates { get; private set; }
     }
 }

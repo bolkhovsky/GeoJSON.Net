@@ -7,6 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Linq;
+using GeoJSON.Net.Feature;
+
 namespace GeoJSON.Net.Converters
 {
     using System;
@@ -14,6 +17,7 @@ namespace GeoJSON.Net.Converters
     using GeoJSON.Net.Geometry;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Defines the GeometryObject type. Converts to/from a SimpleGeo 'geometry' field
@@ -26,8 +30,17 @@ namespace GeoJSON.Net.Converters
         /// <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param><param name="value">The value.</param><param name="serializer">The calling serializer.</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            // ToDo: implement
-            throw new NotImplementedException();
+            try
+            {
+                if (value is IGeometryObject)
+                    GeometryWriter.WriteGeometry(writer, value as IGeometryObject);
+                else
+                    throw new NotSupportedException(value.GetType().Name);
+            }
+            catch (NotImplementedException)
+            {
+                serializer.Serialize(writer, value);
+            }
         }
 
         /// <summary>
@@ -39,8 +52,56 @@ namespace GeoJSON.Net.Converters
         /// </returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            // ToDo: implement
-            throw new NotImplementedException();
+            // Load JObject from stream
+            JObject jObject = JObject.Load(reader); ;
+            
+            if (jObject["type"] == null)
+                throw new ArgumentException("Malformed geojson: cannot find 'type' field");
+
+            return DeserializeObject(jObject);
+        }
+
+        public static IGeometryObject DeserializeObject(JObject jObject)
+        {
+            if (jObject["type"].Value<string>() == "Point")
+            {
+                var point = JsonConvert.DeserializeObject<Point>(jObject.ToString(), new JsonConverter[] { new SinglePositionConverter() });
+                return point;
+            }
+            else if (jObject["type"].Value<string>() == "LineString")
+            {
+                var point = JsonConvert.DeserializeObject<LineString>(jObject.ToString());
+                return point;
+            }
+            else if (jObject["type"].Value<string>() == "Polygon")
+            {
+                var point = JsonConvert.DeserializeObject<Polygon>(jObject.ToString());
+                return point;
+            }
+            else if (jObject["type"].Value<string>() == "MultiPoint")
+            {
+                var point = JsonConvert.DeserializeObject<MultiPoint>(jObject.ToString());
+                return point;
+            }
+            else if (jObject["type"].Value<string>() == "MultiLineString")
+            {
+                var point = JsonConvert.DeserializeObject<MultiLineString>(jObject.ToString());
+                return point;
+            }
+            else if (jObject["type"].Value<string>() == "MultiPolygon")
+            {
+                var point = JsonConvert.DeserializeObject<MultiPolygon>(jObject.ToString());
+                return point;
+            }
+            else if (jObject["type"].Value<string>() == "GeometryCollection")
+            {
+                var point = JsonConvert.DeserializeObject<GeometryCollection>(jObject.ToString());
+                return point;
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
 
         /// <summary>
@@ -52,12 +113,7 @@ namespace GeoJSON.Net.Converters
         /// </returns>
         public override bool CanConvert(Type objectType)
         {
-            if (objectType.IsInterface)
-            {
-                return objectType == typeof(IGeometryObject);
-            }
-
-            return objectType.GetInterface(typeof(IGeometryObject).Name, true) != null;
+            return objectType.IsAssignableFrom(typeof(IGeometryObject));
         }
     }
 }

@@ -11,6 +11,7 @@ namespace GeoJSON.Net.Geometry
 {
     using System.Collections.Generic;
     using Newtonsoft.Json;
+    using GeoJSON.Net.Converters;
 
     /// <summary>
     /// Contains an array of <see cref="Point"/>s.
@@ -22,9 +23,16 @@ namespace GeoJSON.Net.Geometry
         /// Initializes a new instance of the <see cref="MultiPoint"/> class.
         /// </summary>
         /// <param name="coordinates">The coordinates.</param>
-        public MultiPoint(List<Point> coordinates = null)
+        public MultiPoint(List<IGeographicPosition> coordinates)
         {
-            this.Coordinates = coordinates ?? new List<Point>();
+            if (coordinates == null)
+            {
+                this.Coordinates = new List<IGeographicPosition>();
+            }
+            else
+            {
+                this.Coordinates = coordinates;
+            }
             this.Type = GeoJSONObjectType.MultiPoint;
         }
         
@@ -33,6 +41,7 @@ namespace GeoJSON.Net.Geometry
         /// </summary>
         /// <value>The Coordinates.</value>
         [JsonProperty(PropertyName = "coordinates", Required = Required.Always)]
-        public List<Point> Coordinates { get; private set; }
+        [JsonConverter(typeof(PositionsListConverter))]
+        public List<IGeographicPosition> Coordinates { get; private set; }
     }
 }

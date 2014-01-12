@@ -12,6 +12,8 @@
     <AssemblyName>GeoJSON.Net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\satin\Sources\satin_api\SatinAPI\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,28 +34,48 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\GeoJSON.Net.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|AnyCPU'">
+    <OutputPath>bin\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\GeoJSON.Net.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.0.5.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.4.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\GeometryConverter.cs" />
+    <Compile Include="Converters\GeometriesListConverter.cs" />
+    <Compile Include="Converters\GeometryConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Converters\GeometryWriter.cs" />
+    <Compile Include="Converters\MultiPointConverter.cs" />
+    <Compile Include="Converters\MultiPositionConverter.cs" />
+    <Compile Include="Converters\PointConverter.cs" />
     <Compile Include="Converters\PositionConverter.cs" />
     <Compile Include="Converters\PolygonConverter.cs" />
+    <Compile Include="Converters\PositionsListConverter.cs" />
+    <Compile Include="Converters\SinglePositionConverter.cs" />
     <Compile Include="CoordinateReferenceSystem\LinkedCRS.cs" />
     <Compile Include="CoordinateReferenceSystem\CRSBase.cs" />
     <Compile Include="CoordinateReferenceSystem\CRSType.cs" />
     <Compile Include="CoordinateReferenceSystem\ICRSObject.cs" />
     <Compile Include="CoordinateReferenceSystem\NamedCRS.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GeoJSONObject.cs" />
     <Compile Include="Geometry\GeometryCollection.cs" />
+    <Compile Include="Geometry\IProjectedPosition.cs" />
     <Compile Include="Geometry\ProjectedPosition.cs" />
-    <Compile Include="Geometry\IPosition.cs" />
+    <Compile Include="Geometry\IGeographicPosition.cs" />
     <Compile Include="Geometry\MultiLineString.cs" />
     <Compile Include="Geometry\LineString.cs" />
     <Compile Include="Geometry\MultiPoint.cs" />
@@ -66,7 +88,6 @@
     <Compile Include="Geometry\MultiPolygon.cs" />
     <Compile Include="Geometry\Point.cs" />
     <Compile Include="Geometry\Polygon.cs" />
-    <Compile Include="Geometry\Position.cs" />
     <Compile Include="IGeoJSONObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -75,9 +96,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)$(ProjectName)\$(OutDir)$(TargetName).xml $(SolutionDir)..\lib
-copy $(SolutionDir)$(ProjectName)\$(OutDir)$(TargetName).dll $(SolutionDir)..\lib</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

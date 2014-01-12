@@ -26,14 +26,14 @@ namespace GeoJSON.Net.Geometry
         /// Initializes a new instance of the <see cref="Point"/> class.
         /// </summary>
         /// <param name="coordinates">The Position.</param>
-        public Point(IPosition coordinates)
+        public Point(IGeographicPosition coordinates)
         {
             if (coordinates == null)
             {
                 throw new ArgumentNullException("coordinates");
             }
 
-            this.Coordinates = new List<IPosition> { coordinates };
+            this.Coordinates = coordinates;
             this.Type = GeoJSONObjectType.Point;
         }
 
@@ -42,7 +42,7 @@ namespace GeoJSON.Net.Geometry
         /// </summary>
         /// <value>The Coordinates.</value>
         [JsonProperty(PropertyName = "coordinates", Required = Required.Always)]
-        [JsonConverter(typeof(PositionConverter))]
-        public List<IPosition> Coordinates { get; private set; }
+        [JsonConverter(typeof(SinglePositionConverter))]
+        public IGeographicPosition Coordinates { get; private set; }
     }
 }

@@ -15,7 +15,7 @@ namespace GeoJSON.Net.Geometry
     /// <summary>
     /// Defines the Geographic Position type a.k.a. <see cref="http://geojson.org/geojson-spec.html#positions">Geographic Coordinate Reference System</see>.
     /// </summary>
-    public class GeographicPosition : Position
+    public class GeographicPosition : IGeographicPosition
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GeographicPosition"/> class.
@@ -167,6 +167,13 @@ namespace GeoJSON.Net.Geometry
         public override string ToString()
         {
             return this.Altitude == null ? string.Format(CultureInfo.InvariantCulture, "Latitude: {0}, Longitude: {1}", this.Latitude, this.Longitude) : string.Format(CultureInfo.InvariantCulture, "Latitude: {0}, Longitude: {1}, Altitude: {2}", this.Latitude, this.Longitude, this.Altitude);
+        }
+
+
+        public bool Equals(IGeographicPosition otherPosition)
+        {
+            return this.Latitude == otherPosition.Latitude &&
+                this.Longitude == otherPosition.Longitude;
         }
     }
 }

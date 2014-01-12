@@ -15,7 +15,7 @@ namespace GeoJSON.Net.Geometry
     /// <summary>
     /// Defines the Projected Position type a.k.a. <see cref="http://geojson.org/geojson-spec.html#positions">Projected Coordinate Reference System</see>.
     /// </summary>
-    public class ProjectedPosition : Position
+    public class ProjectedPosition : IProjectedPosition
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectedPosition"/> class.
